@@ -571,16 +571,6 @@ void MAPPER_Init()
     }
     else
     {
-        /* add mouse functions to port 0 */
-        if (emulated_mouse)
-        {
-            for (j=0; desc_emulated_mouse[j].port == 0; i++)
-            {
-                desc[i] = desc_emulated_mouse[j];
-                j++;
-                log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
-            }
-        }
         update_dosbox_variable(false, "joystick", "joysticktype", "none");
     }
 
