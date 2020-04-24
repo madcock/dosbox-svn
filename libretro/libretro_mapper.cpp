@@ -285,10 +285,10 @@ void MAPPER_Init()
 
     if (emulated_mouse)
     {
-        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_R2), 0));
-        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_L2), 1));
-        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_R), 2));
-        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_L), 3));
+        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_R), 0));
+        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_L), 1));
+        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_R2), 2));
+        inputList.push_back(new EmulatedMouseButton(0, RDID(JOYPAD_L2), 3));
     }
 
     struct retro_input_descriptor desc[64];
