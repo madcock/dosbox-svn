@@ -424,6 +424,17 @@ void MAPPER_Init()
                 }
         }
 
+        /* add mouse functions to port 0 before adding port 1 */
+        if (emulated_mouse)
+        {
+            for (j=0; desc_emulated_mouse[j].port == 0; i++)
+            {
+                desc[i] = desc_emulated_mouse[j];
+                j++;
+                log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
+            }
+        }
+
         log_cb(RETRO_LOG_INFO, "Port 1 connected\n");
         /* buttons*/
         inputList.push_back(new JoystickButton(1, RDID(JOYPAD_Y), 0, 0));
@@ -436,7 +447,7 @@ void MAPPER_Init()
             inputList.push_back(new JoystickHat(1, RDID(JOYPAD_RIGHT), 0, 0));
             inputList.push_back(new JoystickHat(1, RDID(JOYPAD_UP), 0, 1));
             inputList.push_back(new JoystickHat(1, RDID(JOYPAD_DOWN), 0, 1));
-            for ( ;  desc_gamepad_2button_p2[j].port == 1; i++)
+            for (j=0; desc_gamepad_2button_p2[j].port == 1; i++)
             {
                 desc[i] = desc_gamepad_2button_p2[j];
                 j++;
@@ -450,7 +461,7 @@ void MAPPER_Init()
             /* analogs */
             inputList.push_back(new JoystickAxis(1, RDIX(ANALOG_LEFT), RDID(ANALOG_X), 0, 0));
             inputList.push_back(new JoystickAxis(1, RDIX(ANALOG_LEFT), RDID(ANALOG_Y), 0, 1));
-            for ( ;  desc_joystick_2button_p2[j].port == 1; i++)
+            for (j=0; desc_joystick_2button_p2[j].port == 1; i++)
             {
                 desc[i] = desc_joystick_2button_p2[j];
                 j++;
@@ -504,6 +515,17 @@ void MAPPER_Init()
                     log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
                 }
             }
+
+            /* add mouse functions to port 0 before adding port 1 */
+            if (emulated_mouse)
+            {
+                for (j=0; desc_emulated_mouse[j].port == 0; i++)
+                {
+                    desc[i] = desc_emulated_mouse[j];
+                    j++;
+                    log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
+                }
+            }
         }
         if (connected[1])
         {
@@ -539,7 +561,7 @@ void MAPPER_Init()
                 /* analogs */
                 inputList.push_back(new JoystickAxis(1, RDIX(ANALOG_LEFT), RDID(ANALOG_X), 0, 0));
                 inputList.push_back(new JoystickAxis(1, RDIX(ANALOG_LEFT), RDID(ANALOG_Y), 0, 1));
-                for (i=0;  desc_joystick_2button_p2[i].port == 1; i++)
+                for (i=0; desc_joystick_2button_p2[i].port == 1; i++)
                 {
                     desc[i] = desc_joystick_2button_p2[i];
                     log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
@@ -548,17 +570,20 @@ void MAPPER_Init()
         }
     }
     else
-        update_dosbox_variable(false, "joystick", "joysticktype", "none");
-
-    if (emulated_mouse)
     {
-        for (j=0;  desc_emulated_mouse[j].port == 0; i++)
+        /* add mouse functions to port 0 */
+        if (emulated_mouse)
         {
-            desc[i] = desc_emulated_mouse[j];
-            j++;
-            log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
+            for (j=0; desc_emulated_mouse[j].port == 0; i++)
+            {
+                desc[i] = desc_emulated_mouse[j];
+                j++;
+                log_cb(RETRO_LOG_INFO, "Map: %s\n", desc[i].description);
+            }
         }
+        update_dosbox_variable(false, "joystick", "joysticktype", "none");
     }
+
     environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
 }
 
