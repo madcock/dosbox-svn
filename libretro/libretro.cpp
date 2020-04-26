@@ -1224,7 +1224,7 @@ void init_threads(void)
     }
     if(!emuThread)
     {
-#ifdef __GENODE__
+#if defined (__GENODE__) || defined (PSP)
         emuThread = co_create((1<<18)*sizeof(void*), wrap_dosbox);
 #else
         emuThread = co_create(65536*sizeof(void*)*16, wrap_dosbox);
