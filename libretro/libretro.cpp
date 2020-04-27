@@ -1203,7 +1203,15 @@ static void start_dosbox(void)
 
 static void wrap_dosbox()
 {
-    start_dosbox();
+    try {
+        start_dosbox();
+    } catch (std::bad_alloc) {
+        log_cb(RETRO_LOG_ERROR, "core has run out of memory\n");
+        dosbox_exit = true;
+    } catch (...) {
+        log_cb(RETRO_LOG_ERROR, "core has thrown an unhandled exception\n");
+        dosbox_exit = true;
+    }
 
     if (emuThread && mainThread)
         co_switch(mainThread);
