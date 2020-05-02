@@ -201,6 +201,18 @@ else ifeq ($(platform), win)
 		LDFLAGS += -Wl,-Bdynamic -liphlpapi -lws2_32
 	endif
 	COMMONFLAGS += -D__USE_W32_SOCKETS -Werror=return-type
+else ifneq (,$(findstring qnx,$(platform)))
+	TARGET := $(TARGET_NAME)_libretro_qnx.so
+   CXXFLAGS += -D__STDC_LIMIT_MACROS
+   SHARED := -shared -Wl,--version-script=$(CORE_DIR)/link.T -Wl,--no-undefined
+
+	COMMONFLAGS += -DC_HAVE_MPROTECT="1"
+	LDFLAGS += -shared -Wl,--version-script=link.T
+	WITH_FAKE_SDL=1
+	COMMONFLAGS += -DWITH_FAKE_SDL
+	LDFLAGS += -Wl,-Bstatic
+	LDFLAGS += -Wl,-Bdynamic
+	fpic = -fPIC
 else
 	COMMONFLAGS += -DC_HAVE_MPROTECT="1"
 	TARGET := $(TARGET_NAME)_libretro.so
