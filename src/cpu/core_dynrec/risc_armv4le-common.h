@@ -88,7 +88,9 @@ typedef Bit8u HostReg;
 
 
 static void cache_block_closing(Bit8u* block_start,Bitu block_size) {
-#if defined(VITA)
+#if defined(__QNX__)
+        msync(block_start, block_size, MS_INVALIDATE_ICACHE);
+#elif defined(VITA)
 	sceKernelSyncVMDomain(sceBlock, block_start, block_size);
 #elif (__ARM_EABI__)
 	//flush cache - eabi

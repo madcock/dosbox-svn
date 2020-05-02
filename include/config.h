@@ -34,15 +34,7 @@
 //# define MACOSX 1
 #endif
 
-// ----- RECOMPILER ! YOU MUST CHANGE THIS FOR THE BUILD PLATFORM
-#ifndef __POWERPC__
-/* #undef C_DYNAMIC_X86 */ /* Define to 1 to use x86 dynamic cpu core */
-/* #undef C_DYNREC */ /* Define to 1 to use recompiling cpu core. Can not be used together with the dynamic-x86 core */
-/* #undef C_FPU_X86 */ /* Define to 1 to use a x86 assembly fpu core */
-/* #undef C_TARGETCPU */ /* The type of cpu this target has */
-#endif
-
-#ifndef __mips__
+#if defined(__i386__) || defined(__x86_64__)
 #define C_UNALIGNED_MEMORY 1 /* Define to 1 to use a unaligned memory access */
 #endif
 
@@ -67,7 +59,7 @@
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
 
-#if !defined(__WIN32__) && !defined(__POWERPC__) && !defined(VITA) && !defined(_3DS)
+#if !defined(__WIN32__) && !defined(GEKKO) && !defined(__CELLOS_LV2__) && !defined(VITA) && !defined(_3DS)
 # define HAVE_PWD_H 1
 #endif
 

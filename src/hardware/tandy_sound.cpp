@@ -33,6 +33,10 @@
 #include "mame/emu.h"
 #include "mame/sn76496.h"
 
+#ifdef __QNX__
+#include <string.h>
+#endif
+
 
 #define SOUND_CLOCK (14318180 / 4)
 

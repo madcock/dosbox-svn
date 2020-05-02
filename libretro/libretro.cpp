@@ -60,6 +60,10 @@
 #  include <pspiofilemgr.h>
 #endif
 
+#ifdef __QNX__
+#include <math.h>
+#endif
+
 #ifdef ANDROID
 #include "nonlibc.h"
 #endif
