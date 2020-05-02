@@ -213,6 +213,8 @@ else ifneq (,$(findstring qnx,$(platform)))
 	LDFLAGS += -Wl,-Bstatic
 	LDFLAGS += -Wl,-Bdynamic
 	fpic = -fPIC
+	CC = qcc -Vgcc_ntoarmv7le
+	CXX = QCC -Vgcc_ntoarmv7le
 else
 	COMMONFLAGS += -DC_HAVE_MPROTECT="1"
 	TARGET := $(TARGET_NAME)_libretro.so
