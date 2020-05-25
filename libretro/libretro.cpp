@@ -1400,6 +1400,9 @@ void retro_init (void)
     if (environ_cb(RETRO_ENVIRONMENT_GET_CONTENT_DIRECTORY, &content_dir) && content_dir)
         retro_content_directory = content_dir;
     log_cb(RETRO_LOG_INFO, "[dosbox] CONTENT_DIRECTORY: %s\n", retro_content_directory.c_str());
+
+    bool achievements = true;
+    environ_cb(RETRO_ENVIRONMENT_SET_SUPPORT_ACHIEVEMENTS, &achievements);
 }
 
 void retro_deinit(void)
@@ -1582,9 +1585,25 @@ void retro_reset (void)
     restart_program(control->startup_params);
 }
 
+void* retro_get_memory_data(const unsigned type)
+{
+    if (type == RETRO_MEMORY_SYSTEM_RAM)
+    {
+        return GetMemBase();
+    }
+    return NULL;
+}
+
+size_t retro_get_memory_size(const unsigned type)
+{
+    if (type == RETRO_MEMORY_SYSTEM_RAM)
+    {
+        return MEM_TotalPages() * 4096;
+    }
+    return  0;
+}
+
 /* Stubs */
-void *retro_get_memory_data(unsigned type) { return 0; }
-size_t retro_get_memory_size(unsigned type) { return 0; }
 size_t retro_serialize_size (void) { return 0; }
 bool retro_serialize(void *data, size_t size) { return false; }
 bool retro_unserialize(const void * data, size_t size) { return false; }
