@@ -341,12 +341,13 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "dosbox_svn_aspect_correction",
-      "Video: Aspect ratio correction.",
-      "When enabled, the core's aspect ratio is set to what a CRT monitor would display. This is "
-      "required for all non 4:3 VGA resolutions to look as intended. When disabled, the core's "
-      "aspect ratio is set to match the current VGA resolution's width to height ratio, providing "
-      "integer scaling but resulting in a stretched or squashed image.",
-      {
+      "Video: Aspect ratio correction",
+      "When enabled, the aspect ratio will match that of a CRT monitor. This is required for "
+      "non-square pixel resolutions to look as intended. Disable this if you want "
+      "unscaled square pixel aspect ratios (at the cost of a squashed or stretched "
+      "image), or if the result looks clearly wrong (games that use 640x350 for example "
+      "will look stretched with this enabled.)",
+	  {
          { "true", NULL },
          { "false", NULL },
          { NULL, NULL },
