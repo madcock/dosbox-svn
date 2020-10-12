@@ -4,3 +4,11 @@
 [submodule "libretro/deps/common"]
 	path = libretro/deps/common
 	url = https://github.com/libretro/libretro-common.git
+[submodule "libretro/deps/sdl"]
+	path = libretro/deps/sdl
+	url = https://github.com/SDL-mirror/SDL.git
+	branch = SDL-1.2
+[submodule "libretro/deps/sdl_net"]
+	path = libretro/deps/sdl_net
+	url = https://github.com/SDL-mirror/SDL_net.git
+	branch = SDL-1.2
