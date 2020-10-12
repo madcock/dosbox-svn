@@ -1,9 +1,6 @@
 LIBRETRO_COMM_DIR := \
 	$(CORE_DIR)/libretro/deps/common
 
-LIBRETRO_SDL_DIR := \
-	$(CORE_DIR)/libretro/deps/sdl
-
 ifeq ($(WITH_FAKE_SDL), 1)
 INCFLAGS += \
 		-I$(CORE_DIR)/libretro/fakesdl
