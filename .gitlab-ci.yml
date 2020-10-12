@@ -39,7 +39,7 @@ libretro-build-windows-x64:
   variables:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
-    
+
 # Android
 android-armeabi-v7a:
   extends:
@@ -55,7 +55,7 @@ android-x86_64:
   extends:
     - .core-defs
     - .libretro-android-jni-x86_64
-    
+
 android-x86:
   extends:
     - .core-defs
