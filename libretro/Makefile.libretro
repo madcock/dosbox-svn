@@ -1,9 +1,17 @@
 DEBUG := 0
+
+# Build and link our own sdl and sdl_net statically.
+BUNDLED_SDL ?= 0
+
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 SVN_VERSION := " $(shell cat svn)"
 
 UNAME=$(shell uname -s)
 UNAMEM=$(shell uname -m)
+NUMPROC?=$(shell nproc)
+ifeq ($(NUMPROC),)
+	NUMPROC=2
+endif
 
 # Target triplet for cross compilation. When cross compiling from Linux to
 # Windows 32-bit using MXE for example, you'd set this to something like:
@@ -19,6 +27,7 @@ AS:=$(cross_prefix)$(AS)
 CC:=$(cross_prefix)$(CC)
 CXX:=$(cross_prefix)$(CXX)
 LD:=$(cross_prefix)$(LD)
+PKGCONFIG=$(cross_prefix)pkg-config
 
 platform ?= unix
 ifneq ($(findstring MINGW,$(UNAME)),)
@@ -57,7 +66,7 @@ endif
 ifeq ($(platform), osx)
 	COMMONFLAGS += -DC_HAVE_MPROTECT="1"
 	TARGET := $(TARGET_NAME)_libretro.dylib
-	LDFLAGS += -dynamiclib -lSDL -lSDL_net
+	LDFLAGS += -dynamiclib `$(PKGCONFIG) $(PKG_CONFIG_FLAGS) --libs SDL_net`
 	fpic = -fPIC
 	fpic += -mmacosx-version-min=10.1
 	ifndef ($(UNIVERSAL))
@@ -223,7 +232,7 @@ else
 		COMMONFLAGS += -DWITH_FAKE_SDL
 		LDFLAGS += -Wl,-Bstatic
 	else
-		LDFLAGS += `$(cross_prefix)sdl-config --libs` -lSDL_net
+        LDFLAGS += `$(PKGCONFIG) --libs SDL_net`
 	endif
 	LDFLAGS += -Wl,-Bdynamic
 	fpic = -fPIC
@@ -235,6 +244,7 @@ else
 endif
 
 ifneq ($(WITH_FAKE_SDL), 1)
+	COMMONFLAGS += `$(PKGCONFIG) --cflags sdl`
 	ifeq ($(WITH_IPX), 1)
 		COMMONFLAGS += -DC_IPX
 	endif
@@ -245,6 +255,22 @@ INCFLAGS	:=
 SOURCES_C   :=
 SOURCES_CXX :=
 
+DEPS_BIN_DIR = $(CURDIR)/deps_bin
+ifeq ($(BUNDLED_SDL), 1)
+	SDL_BUILD_DIR = $(DEPS_BIN_DIR)/sdl_build
+	SDL = $(DEPS_BIN_DIR)/lib/pkgconfig/sdl.pc
+	SDLNET_BUILD_DIR = $(DEPS_BIN_DIR)/sdl_net_build
+	SDLNET = $(DEPS_BIN_DIR)/lib/pkgconfig/SDL_net.pc
+endif
+
+export PKG_CONFIG_PATH := $(DEPS_BIN_DIR)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+export PATH := $(DEPS_BIN_DIR)/bin:$(PATH)
+# When cross compiling with MXE, we need PKG_CONFIG_PATH_<TARGET_TRIPLET> but with all dashes and
+# dots converted to underscores.
+ifdef TARGET_TRIPLET
+	export PKG_CONFIG_PATH_$(subst .,_,$(subst -,_,$(TARGET_TRIPLET))) = $(PKG_CONFIG_PATH)
+endif
+
 include Makefile.common
 
 OBJECTS  = $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o)
@@ -253,21 +279,72 @@ CFLAGS   += -D__LIBRETRO__ $(fpic) $(INCFLAGS) $(COMMONFLAGS)
 LDFLAGS  += -lm $(fpic)
 
 all: $(TARGET)
-$(TARGET): $(OBJECTS)
 
+.PHONY: sdl
+sdl: $(SDL)
+
+.PHONY: sdl_net
+sdl_net: $(SDLNET)
+
+.PHONY: deps
+deps: sdl sdl_net
+
+$(SDL):
+	mkdir -p "$(SDL_BUILD_DIR)"
+	cd "$(SDL_BUILD_DIR)" \
+	&& "$(CURDIR)/deps/sdl/configure" \
+	    --host=$(TARGET_TRIPLET) \
+	    --prefix="$(DEPS_BIN_DIR)" \
+	    --disable-shared \
+	    --enable-static \
+	    --disable-audio \
+	    --disable-video \
+	    --disable-events \
+	    --disable-joystick \
+	    --enable-cdrom \
+	    --enable-threads \
+	    --enable-timers \
+	    --enable-file \
+	    --disable-loadso \
+	    --enable-cpuinfo \
+	    --enable-assembly \
+	    --disable-nasm \
+	    --disable-altivec \
+	    --disable-stdio-redirect \
+	    --disable-rpath \
+	    --with-pic \
+	    --without-x \
+	&& $(MAKE) -j$(NUMPROC) install
+
+$(SDLNET): $(SDL)
+	mkdir -p "$(SDLNET_BUILD_DIR)"
+	cd "$(SDLNET_BUILD_DIR)" \
+	&& "$(CURDIR)/deps/sdl_net/configure" \
+	    --host=$(TARGET_TRIPLET) \
+	    --prefix="$(DEPS_BIN_DIR)" \
+	    --disable-shared \
+	    --enable-static \
+	    --disable-sdltest \
+	    --disable-gui \
+	    --with-pic \
+	&& $(MAKE) -j$(NUMPROC) install
+
+$(OBJECTS): deps
+
+$(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
 	$(CXX) -o $@ $(OBJECTS) $(LDFLAGS)
 endif
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
-
-clean:
+.PHONY: targetclean
+targetclean:
 	rm -f $(OBJECTS) $(TARGET)
 
-.PHONY: clean install uninstall
+.PHONY: depsclean
+depsclean:
+	rm -rf "$(DEPS_BIN_DIR)"
+
+.PHONY: clean
+clean: depsclean targetclean
