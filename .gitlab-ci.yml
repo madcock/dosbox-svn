@@ -31,6 +31,15 @@ libretro-build-linux-x64:
   variables:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
+    platform: unix
+    BUNDLED_SDL: 1
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-linux-x64"
+    untracked: true
+  script:
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
+    - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
 
 libretro-build-windows-x64:
   extends:
@@ -39,6 +48,19 @@ libretro-build-windows-x64:
   variables:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
+    CC: gcc
+    CXX: g++
+    platform: win
+    TARGET_TRIPLET: x86_64-w64-mingw32.static
+    BUNDLED_SDL: 0
+  image: realnc/dosbox-core-build:mxe
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-windows-x64"
+    untracked: true
+  script:
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
+    - ${TARGET_TRIPLET}-strip ${MAKEFILE_PATH}/${CORENAME}_libretro.dll
 
 # Android
 android-armeabi-v7a:
@@ -69,6 +91,7 @@ libretro-build-libnx-aarch64:
   variables:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
+    BUNDLED_SDL: 0
 
 libretro-build-vita:
   extends:
@@ -77,3 +100,4 @@ libretro-build-vita:
   variables:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
+    BUNDLED_SDL: 0
