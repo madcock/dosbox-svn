@@ -3,7 +3,7 @@ LIBRETRO_COMM_DIR := \
 
 ifeq ($(WITH_FAKE_SDL), 1)
 INCFLAGS += \
-		-I$(CORE_DIR)/libretro/fakesdl
+		-I$(CORE_DIR)/libretro/fakesdl/SDL
 endif
 
 # include flags
