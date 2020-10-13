@@ -34,8 +34,10 @@ libretro-build-linux-x64:
     platform: unix
     BUNDLED_SDL: 1
   cache:
-    key: "$CI_COMMIT_REF_SLUG-linux-x64"
-    untracked: true
+    key: "$CI_COMMIT_REF_SLUG-linux-x64-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
@@ -55,8 +57,10 @@ libretro-build-windows-x64:
     BUNDLED_SDL: 0
   image: realnc/dosbox-core-build:mxe
   cache:
-    key: "$CI_COMMIT_REF_SLUG-windows-x64"
-    untracked: true
+    key: "$CI_COMMIT_REF_SLUG-windows-x64-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
@@ -67,21 +71,41 @@ android-armeabi-v7a:
   extends:
     - .core-defs
     - .libretro-android-jni-armeabi-v7a
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-android-armeabi-v7a-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
 
 android-arm64-v8a:
   extends:
     - .core-defs
     - .libretro-android-jni-arm64-v8a
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-android-arm64-v8a-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
 
 android-x86_64:
   extends:
     - .core-defs
     - .libretro-android-jni-x86_64
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-android-x86_64-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
 
 android-x86:
   extends:
     - .core-defs
     - .libretro-android-jni-x86
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-android-x86-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
 
 # Static
 libretro-build-libnx-aarch64:
@@ -92,6 +116,11 @@ libretro-build-libnx-aarch64:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
     BUNDLED_SDL: 0
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-libnx-aarch64-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
 
 libretro-build-vita:
   extends:
@@ -101,3 +130,8 @@ libretro-build-vita:
     MAKEFILE_PATH: libretro
     MAKEFILE: Makefile.libretro
     BUNDLED_SDL: 0
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-vita-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
