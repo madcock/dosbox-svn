@@ -1,0 +1,6 @@
+*.[oad]
+*.autosave
+*.dll
+*.so
+*~
+/libretro/deps_bin/
