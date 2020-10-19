@@ -274,11 +274,13 @@ endif
 
 include Makefile.common
 
-OBJECTS  = $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o)
-CXXFLAGS += -D__LIBRETRO__ $(fpic) $(INCFLAGS) $(COMMONFLAGS)
-CFLAGS   += -D__LIBRETRO__ $(fpic) $(INCFLAGS) $(COMMONFLAGS)
-LDFLAGS  += -lm $(fpic)
+OBJECTS = $(SOURCES_CXX:.cpp=.o) $(SOURCES_C:.c=.o)
+OBJECT_DEPS = $(OBJECTS:.o=.d)
+CXXFLAGS += -D__LIBRETRO__ -MMD $(fpic) $(INCFLAGS) $(COMMONFLAGS)
+CFLAGS += -D__LIBRETRO__ -MMD $(fpic) $(INCFLAGS) $(COMMONFLAGS)
+LDFLAGS += -lm $(fpic)
 
+.PHONY: all
 all: $(TARGET)
 
 .PHONY: sdl
@@ -330,18 +332,20 @@ $(SDLNET): $(SDL)
 	    --with-pic \
 	&& $(MAKE) -j$(NUMPROC) install
 
-$(OBJECTS): deps
+$(OBJECTS): $(SDLNET)
 
 $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
-	$(AR) rcs $@ $(OBJECTS)
+	$(AR) rcs $@ $^
 else
-	$(CXX) -o $@ $(OBJECTS) $(LDFLAGS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
 endif
+
+-include $(OBJECT_DEPS)
 
 .PHONY: targetclean
 targetclean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(OBJECT_DEPS) $(TARGET)
 
 .PHONY: depsclean
 depsclean:
