@@ -55,7 +55,7 @@ libretro-build-windows-x64:
     platform: win
     TARGET_TRIPLET: x86_64-w64-mingw32.static
     BUNDLED_SDL: 0
-  image: realnc/dosbox-core-build:mxe
+  image: realnc/dosbox-core-build:mxe-x64
   cache:
     key: "$CI_COMMIT_REF_SLUG-windows-x64-1"
     untracked: false
