@@ -11,9 +11,7 @@
 #include <math.h>
 #include <float.h>
 #include <stdlib.h>
-#if !defined (__CELLOS_LV2__)
 #include <memory.h>
-#endif
 
 #if C_DEBUG
 #include <stdio.h>

@@ -55,9 +55,7 @@ differences between OPL2 and OPL3 shown in datasheets:
 
 */
 
-#ifdef __CELLOS_LV2__
 #include "libretro_dosbox.h"
-#endif
 #include "emu.h"
 #include "ymf262.h"
 

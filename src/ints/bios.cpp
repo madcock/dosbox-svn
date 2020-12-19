@@ -36,13 +36,13 @@
 #endif
 #include <time.h>
 
-#if defined(DB_HAVE_CLOCK_GETTIME) && ! defined(WIN32) || defined(ANDROID) || defined(__CELLOS_LV2__)
+#if defined(DB_HAVE_CLOCK_GETTIME) && ! defined(WIN32) || defined(ANDROID)
 //time.h is already included
 #else
 #include <sys/timeb.h>
 #endif
 
-#if defined(ANDROID) || defined(HAVE_LIBNX) || defined(WIIU) || defined (GEKKO) || defined (_3DS) || defined(PSP) || defined(__CELLOS_LV2__)
+#if defined(ANDROID) || defined(HAVE_LIBNX) || defined(WIIU) || defined (GEKKO) || defined (_3DS) || defined(PSP)
 
 struct FAKEtimeb
 {
