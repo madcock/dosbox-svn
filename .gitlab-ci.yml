@@ -1,3 +1,10 @@
+# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
+
+##############################################################################
+################################# BOILERPLATE ################################
+##############################################################################
+
+# Core definitions
 .core-defs:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
@@ -6,42 +13,43 @@
     MAKEFILE: Makefile.libretro
     CORENAME: dosbox_svn
 
+# Core definitions
 include:
-  - template: Jobs/Code-Quality.gitlab-ci.yml
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/libnx-static.yml'
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/vita-static.yml'
-  - project: 'libretro-infrastructure/ci-templates'
-    file: '/linux-x64.yml'
+  ################################## DESKTOPS ################################
+  # Windows 64-bit
   - project: 'libretro-infrastructure/ci-templates'
     file: '/windows-x64-mingw.yml'
+
+  # Linux 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-x64.yml'
+
+  ################################## CELLULAR ################################
+  # Android
   - project: 'libretro-infrastructure/ci-templates'
     file: '/android-jni.yml'
 
+  ################################## CONSOLES ################################
+  # Nintendo 3DS
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ctr-static.yml'
+
+  # Nintendo Switch
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/libnx-static.yml'
+
+  # PlayStation Vita
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/vita-static.yml'
+
+# Stages for building
 stages:
   - build-prepare
   - build-shared
   - build-static
-  - test
 
-#Desktop
-libretro-build-linux-x64:
-  extends:
-    - .libretro-linux-x64-make-default
-    - .core-defs
-  variables:
-    BUNDLED_SDL: 1
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-linux-x64-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
-  script:
-    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
-    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
-    - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
-
+################################### DESKTOPS #################################
+# Windows 64-bit
 libretro-build-windows-x64:
   extends:
     - .libretro-windows-x64-mingw-make-default
@@ -63,7 +71,25 @@ libretro-build-windows-x64:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
     - ${TARGET_TRIPLET}-strip ${MAKEFILE_PATH}/${CORENAME}_libretro.dll
 
-# Android
+# Linux 64-bit
+libretro-build-linux-x64:
+  extends:
+    - .libretro-linux-x64-make-default
+    - .core-defs
+  variables:
+    BUNDLED_SDL: 1
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-linux-x64-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
+  script:
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
+    - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
+
+################################### CELLULAR #################################
+# Android ARMv7a
 android-armeabi-v7a:
   extends:
     - .libretro-android-jni-armeabi-v7a
@@ -74,6 +100,7 @@ android-armeabi-v7a:
     paths:
       - libretro/deps_bin/
 
+# Android ARMv8a
 android-arm64-v8a:
   extends:
     - .libretro-android-jni-arm64-v8a
@@ -84,6 +111,7 @@ android-arm64-v8a:
     paths:
       - libretro/deps_bin/
 
+# Android 64-bit x86
 android-x86_64:
   extends:
     - .libretro-android-jni-x86_64
@@ -94,6 +122,7 @@ android-x86_64:
     paths:
       - libretro/deps_bin/
 
+# Android 32-bit x86
 android-x86:
   extends:
     - .libretro-android-jni-x86
@@ -104,7 +133,20 @@ android-x86:
     paths:
       - libretro/deps_bin/
 
-# Static
+# Nintendo 3DS
+libretro-build-ctr:
+  extends:
+    - .libretro-ctr-static-retroarch-master
+    - .core-defs
+  variables:
+    BUNDLED_SDL: 0
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-ctr-1"
+    untracked: false
+    paths:
+      - libretro/deps_bin/
+
+# Nintendo Switch
 libretro-build-libnx-aarch64:
   extends:
     - .libretro-libnx-static-retroarch-master
@@ -117,6 +159,7 @@ libretro-build-libnx-aarch64:
     paths:
       - libretro/deps_bin/
 
+# PlayStation Vita
 libretro-build-vita:
   extends:
     - .libretro-vita-static-retroarch-master
