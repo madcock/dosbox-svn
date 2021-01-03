@@ -73,11 +73,6 @@ libretro-build-linux-x64:
     - .core-defs
   variables:
     BUNDLED_SDL: 1
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-linux-x64-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
