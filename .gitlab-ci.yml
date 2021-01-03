@@ -84,45 +84,26 @@ android-armeabi-v7a:
   extends:
     - .libretro-android-jni-armeabi-v7a
     - .core-defs
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-android-armeabi-v7a-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
 # Android ARMv8a
 android-arm64-v8a:
   extends:
     - .libretro-android-jni-arm64-v8a
     - .core-defs
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-android-arm64-v8a-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
 # Android 64-bit x86
 android-x86_64:
   extends:
     - .libretro-android-jni-x86_64
     - .core-defs
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-android-x86_64-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
 # Android 32-bit x86
 android-x86:
   extends:
     - .libretro-android-jni-x86
     - .core-defs
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-android-x86-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
+################################### CONSOLES #################################
 # Nintendo 3DS
 libretro-build-ctr:
   extends:
@@ -130,11 +111,6 @@ libretro-build-ctr:
     - .core-defs
   variables:
     BUNDLED_SDL: 0
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-ctr-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
 # Nintendo Switch
 libretro-build-libnx-aarch64:
@@ -143,11 +119,6 @@ libretro-build-libnx-aarch64:
     - .core-defs
   variables:
     BUNDLED_SDL: 0
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-libnx-aarch64-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
 
 # PlayStation Vita
 libretro-build-vita:
@@ -156,8 +127,3 @@ libretro-build-vita:
     - .core-defs
   variables:
     BUNDLED_SDL: 0
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-vita-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
