@@ -61,11 +61,6 @@ libretro-build-windows-x64:
     TARGET_TRIPLET: x86_64-w64-mingw32.static
     BUNDLED_SDL: 0
   image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe:latest
-  cache:
-    key: "$CI_COMMIT_REF_SLUG-windows-x64-1"
-    untracked: false
-    paths:
-      - libretro/deps_bin/
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
