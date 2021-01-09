@@ -28,10 +28,18 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-x64.yml'
 
+  # Linux 32-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-i686.yml'
+
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
     file: '/android-jni.yml'
+
+  # iOS 9
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/ios9.yml'
 
   ################################## CONSOLES ################################
   # Nintendo 3DS
@@ -99,6 +107,18 @@ libretro-build-linux-x64:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
     - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
 
+# Linux 32-bit
+libretro-build-linux-i686:
+  extends:
+    - .libretro-linux-i686-make-default
+    - .core-defs
+  variables:
+    BUNDLED_SDL: 1
+  script:
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
+    - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
+
 ################################### CELLULAR #################################
 # Android ARMv7a
 android-armeabi-v7a:
@@ -124,6 +144,14 @@ android-x86:
     - .libretro-android-jni-x86
     - .core-defs
 
+# iOS 9
+libretro-build-ios-9:
+  extends:
+    - .libretro-ios9-make-default
+    - .core-defs
+  variables:
+    BUNDLED_SDL: 0
+    
 ################################### CONSOLES #################################
 # Nintendo 3DS
 libretro-build-ctr:
