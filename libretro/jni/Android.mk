@@ -63,6 +63,9 @@ LOCAL_SRC_FILES    := $(SOURCES_C) $(SOURCES_CXX)
 LOCAL_CFLAGS       := $(COMMONFLAGS)
 LOCAL_CPPFLAGS     := $(COMMONFLAGS)
 LOCAL_LDFLAGS      := -Wl,-version-script=$(CORE_DIR)/libretro/link.T
+ifeq ($(TARGET_ARCH_ABI), x86)
+    LOCAL_LDFLAGS  += -Wl,-z,notext
+endif
 LOCAL_LDLIBS       := -llog
 LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_DISABLE_FATAL_LINKER_WARNINGS := true
