@@ -72,7 +72,6 @@ libretro-build-windows-x64:
     platform: win
     TARGET_TRIPLET: x86_64-w64-mingw32.static
     BUNDLED_SDL: 0
-  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe:latest
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
@@ -89,7 +88,6 @@ libretro-build-windows-i686:
     platform: win
     TARGET_TRIPLET: i686-w64-mingw32.static
     BUNDLED_SDL: 0
-  image: $CI_SERVER_HOST:5050/libretro-infrastructure/libretro-build-mxe:latest
   script:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
