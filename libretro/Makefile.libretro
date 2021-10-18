@@ -68,7 +68,6 @@ ifeq ($(platform), osx)
 	TARGET := $(TARGET_NAME)_libretro.dylib
 	LDFLAGS += -dynamiclib `$(PKGCONFIG) $(PKG_CONFIG_FLAGS) --libs SDL_net`
 	fpic = -fPIC
-	fpic += -mmacosx-version-min=10.1
 	ifndef ($(UNIVERSAL))
 		CFLAGS += $(ARCHFLAGS)
 		CXXFLAGS += $(ARCHFLAGS)

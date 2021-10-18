@@ -32,6 +32,10 @@ include:
   - project: 'libretro-infrastructure/ci-templates'
     file: '/linux-i686.yml'
 
+  # MacOS 64-bit
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/osx-x64.yml'
+
   ################################## CELLULAR ################################
   # Android
   - project: 'libretro-infrastructure/ci-templates'
@@ -116,6 +120,35 @@ libretro-build-linux-i686:
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
     - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
     - strip ${MAKEFILE_PATH}/${CORENAME}_libretro.so
+
+# MacOS 64-bit
+libretro-build-osx-x64:
+  extends:
+    - .libretro-osx-x64-make-default
+    - .core-defs
+  variables:
+    MACOSX_DEPLOYMENT_TARGET: '10.12'
+    platform: osx
+    BUNDLED_SDL: 0
+    PKG_CONFIG_FLAGS: --static
+  script:
+    - export PATH="/private/var/tmp/homebrew_dosbox_core/bin:/private/var/tmp/homebrew_dosbox_core/sbin:$PATH"
+    - pushd .
+    - cd /private/var/tmp
+    - rm -rf homebrew_dosbox_core
+    - mkdir homebrew_dosbox_core
+    - cd homebrew_dosbox_core
+    - curl -s -S -L 'https://github.com/realnc/stuff/releases/download/stuff/zstd-macos.tar.xz' | tar x
+    - curl -s -S -L 'https://github.com/realnc/stuff/releases/download/stuff/homebrew-10.12-dosbox-core.tar.zst' | ./zstd -d | tar x
+    - mkdir static_libs
+    - ln -s /private/var/tmp/homebrew_dosbox_core/{lib,opt/libffi/lib}/*.a static_libs/
+    - curl -s -S -L 'https://github.com/realnc/stuff/releases/download/stuff/MacOSX10.13.sdk.tar.zst' | ./zstd -d | tar x
+    - popd
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} deps
+    - export LDFLAGS="-L \"$PWD/libretro/deps_bin/lib\" -L /private/var/tmp/homebrew_dosbox_core/static_libs"
+    - make -C ${MAKEFILE_PATH} -f ${MAKEFILE} -j${NUMPROC}
+    - strip -u -r -S ${MAKEFILE_PATH}/${CORENAME}_libretro.dylib
+    - rm -rf /private/var/tmp/homebrew_dosbox_core
 
 ################################### CELLULAR #################################
 # Android ARMv7a
