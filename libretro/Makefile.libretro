@@ -286,7 +286,8 @@ deps: sdl sdl_net
 $(SDL):
 	mkdir -p "$(SDL_BUILD_DIR)"
 	cd "$(SDL_BUILD_DIR)" \
-	&& "$(CURDIR)/deps/sdl/configure" \
+	&& $(if $(filter $(platform),osx),CC=clang CXX=clang++) CFLAGS= CXXFLAGS= LDFLAGS= \
+	    "$(CURDIR)/deps/sdl/configure" \
 	    --host=$(TARGET_TRIPLET) \
 	    --prefix="$(DEPS_BIN_DIR)" \
 	    --disable-shared \
@@ -313,7 +314,8 @@ $(SDL):
 $(SDLNET): $(SDL)
 	mkdir -p "$(SDLNET_BUILD_DIR)"
 	cd "$(SDLNET_BUILD_DIR)" \
-	&& "$(CURDIR)/deps/sdl_net/configure" \
+	&& $(if $(filter $(platform),osx),CC=clang CXX=clang++) CFLAGS= CXXFLAGS= LDFLAGS= \
+	    "$(CURDIR)/deps/sdl_net/configure" \
 	    --host=$(TARGET_TRIPLET) \
 	    --prefix="$(DEPS_BIN_DIR)" \
 	    --disable-shared \
@@ -321,6 +323,10 @@ $(SDLNET): $(SDL)
 	    --disable-sdltest \
 	    --disable-gui \
 	    --with-pic \
+	&& $(MAKE) -j$(NUMPROC) libSDL_net.la \
+	&& sleep 2 \
+	&& touch showinterfaces \
+	&& touch showinterfaces.exe \
 	&& $(MAKE) -j$(NUMPROC) install
 
 $(OBJECTS): $(SDLNET)
