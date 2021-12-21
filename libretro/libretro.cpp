@@ -1622,7 +1622,7 @@ void retro_unload_game (void) { }
 unsigned retro_get_region (void) { return RETRO_REGION_NTSC; }
 
 
-#if defined(VITA) || defined(PSP)
+#if defined(PSP)
 extern "C" int mkdir(const char *dir, mode_t mode) {
   return sceIoMkdir(dir, mode);
 }
@@ -1632,6 +1632,7 @@ extern "C" int rmdir(const char *dir) {
 
 extern "C" char *getcwd(char *buffer, size_t len)
 {
+  /* TODO/FIXME - ux0 would not be available on PSP? */
   strcpy(buffer,"ux0:/data/retroarch/");
   return 0;
 }
