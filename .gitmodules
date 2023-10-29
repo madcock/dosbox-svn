@@ -10,5 +10,5 @@
 	url = https://github.com/SDL-mirror/SDL_net.git
 	branch = SDL-1.2
 [submodule "libretro/deps/libretro-common"]
-	path = libretro/deps/libretro-common
+	path = libretro/deps/common
 	url = https://github.com/madcock/libretro-common
