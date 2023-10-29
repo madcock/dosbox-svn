@@ -63,7 +63,7 @@
 #endif
 
 // ----- STANDARD LIBRARY FEATURES
-#if !defined (__QNX__) && !defined(VITA) && !defined(PSP)
+#if !defined (__QNX__) && !defined(VITA) && !defined(PSP) && !defined(SF2000)
 #define DIRENT_HAS_D_TYPE 1 /* struct dirent has d_type */
 #endif
 /* #undef DB_HAVE_NO_POWF */ /* libm doesn't include powf */
