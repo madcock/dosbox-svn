@@ -1477,7 +1477,7 @@ bool retro_load_game(const struct retro_game_info *game)
             log_cb(RETRO_LOG_INFO, "[dosbox] loading default configuration %s\n", configPath.c_str());
         }
 
-#if !defined (VITA) && !defined(__PSL1GHT__)
+#if !defined (VITA) && !defined(__PSL1GHT__) && !defined (SF2000)
         // Change the current working directory so that it's possible to have paths in .conf and
         // .bat files (like MOUNT commands) that are relative to the content directory.
         std::string dir = gamePath.substr(0, gamePath.find_last_of(PATH_SEPARATOR));
@@ -1635,4 +1635,19 @@ extern "C" char *getcwd(char *buffer, size_t len)
   return 0;
 }
 
+#endif
+
+#if defined(SF2000)
+extern "C" char *getcwd(char *buffer, size_t len)
+{
+	return NULL;
+}
+extern "C" int rmdir(const char *dir)
+{
+	return -1;
+}
+extern "C" int unlink(const char *__path)
+{
+	return -1;
+}
 #endif

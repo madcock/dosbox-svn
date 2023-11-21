@@ -40,10 +40,15 @@ inline void SDL_Delay(unsigned ms)
 
 inline unsigned SDL_GetTicks()
 {
+#if !defined(SF2000)
     struct timeval t;
     gettimeofday(&t, 0);
     
     return (t.tv_sec * 1000) + (t.tv_usec / 1000);
+#else
+	clock_t ticks = clock();
+	return ticks;
+#endif
 }
 
 // CD

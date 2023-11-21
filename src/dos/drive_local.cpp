@@ -31,6 +31,18 @@
 #include "inout.h"
 #include "libretro_dosbox.h"
 
+#if defined(SF2000)
+#include <sys/stat.h>
+static int libretro_stat(const char *path, struct stat *statbuf)
+{
+#ifdef USE_LIBRETRO_VFS
+    return stat(utf8_to_local_string_alloc(path), statbuf);
+#else
+    return stat(path, statbuf);
+#endif
+}
+#endif
+
 bool localDrive::FileCreate(DOS_File * * file,char * name,Bit16u /*attributes*/) {
 //TODO Maybe care for attributes but not likely
 	char newname[CROSS_LEN];
@@ -352,8 +364,13 @@ bool localDrive::TestDir(char * dir) {
 		if (stat(newdir,&test))			return false;
 		if ((test.st_mode & S_IFDIR)==0)	return false;
 	};
+#if !defined(SF2000)
 	int temp=access(newdir,F_OK);
 	return (temp==0);
+#else
+    struct stat buffer;
+    return libretro_stat(newdir, &buffer);
+#endif
 }
 
 bool localDrive::Rename(char * oldname,char * newname) {
@@ -470,7 +487,11 @@ bool localFile::Write(Bit8u * data,Bit16u * size) {
 	if (last_action==READ) fseek(fhandle,ftell(fhandle),SEEK_SET);
 	last_action=WRITE;
 	if(*size==0){  
+#if !defined(SF2000)
         return (!ftruncate(fileno(fhandle),ftell(fhandle)));
+#else
+		return -1;
+#endif
     }
     else 
     {

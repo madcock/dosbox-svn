@@ -28,6 +28,17 @@
 #include "support.h"
 #include "libretro_dosbox.h"
 
+#if defined(SF2000)
+#include <sys/stat.h>
+static int libretro_stat(const char *path, struct stat *statbuf)
+{
+#ifdef USE_LIBRETRO_VFS
+    return stat(utf8_to_local_string_alloc(path), statbuf);
+#else
+    return stat(path, statbuf);
+#endif
+}
+#endif
 
 Bitu call_shellstop;
 /* Larger scope so shell_del autoexec can use it to
@@ -458,7 +469,12 @@ public:
 					if(!name) continue;
 				}
 				*name++ = 0;
+#if !defined(SF2000)
 				if (access(buffer,F_OK)) continue;
+#else
+				struct stat statbuffer;
+				if(libretro_stat(buffer, &statbuffer)) continue;
+#endif
 				autoexec[12].Install(std::string("MOUNT C \"") + buffer + "\"");
 				autoexec[13].Install("C:");
 				/* Save the non-modified filename (so boot and imgmount can use it (long filenames, case sensivitive)) */

@@ -42,7 +42,7 @@
 #include <sys/timeb.h>
 #endif
 
-#if defined(ANDROID) || defined(HAVE_LIBNX) || defined(WIIU) || defined (GEKKO) || defined (_3DS) || defined(PSP)
+#if defined(ANDROID) || defined(HAVE_LIBNX) || defined(WIIU) || defined (GEKKO) || defined (_3DS) || defined(PSP) || defined(SF2000)
 
 struct FAKEtimeb
 {
@@ -54,7 +54,7 @@ void FAKEftime(struct FAKEtimeb* tb)
 {
 	time(&tb->time);
 
-#if defined(__linux__) || defined(__unix__)
+#if defined(__linux__) || defined(__unix__) && !defined(SF2000)
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	tb->millitm = tv.tv_usec/1000;

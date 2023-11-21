@@ -58,7 +58,7 @@
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
 
-#if !defined(__WIN32__) && !defined(GEKKO) && !defined(VITA) && !defined(_3DS)
+#if !defined(__WIN32__) && !defined(GEKKO) && !defined(VITA) && !defined(_3DS) && !defined(SF2000)
 # define HAVE_PWD_H 1
 #endif
 
