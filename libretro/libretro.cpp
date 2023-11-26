@@ -1636,18 +1636,3 @@ extern "C" char *getcwd(char *buffer, size_t len)
 }
 
 #endif
-
-#if defined(SF2000)
-extern "C" char *getcwd(char *buffer, size_t len)
-{
-	return NULL;
-}
-extern "C" int rmdir(const char *dir)
-{
-	return -1;
-}
-extern "C" int unlink(const char *__path)
-{
-	return -1;
-}
-#endif
